@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Data/Image/play.png</file>
+        <file>Data/Image/next.png</file>
+        <file>Data/Image/pause.png</file>
+        <file>Data/Image/pre.png</file>
+        <file>Data/Image/sound.png</file>
+        <file>Data/Image/stop.png</file>
+        <file>Data/Image/list-view.png</file>
+        <file>Data/Image/audio.png</file>
+        <file>Data/Image/minus.png</file>
+        <file>Data/Image/plus.png</file>
+        <file>Data/Image/sound mute.png</file>
+        <file>Data/Image/video.png</file>
+        <file>Data/Image/shut-down.png</file>
+        <file>Data/Image/min-btn.png</file>
+        <file>Data/Image/max-btn.png</file>
+        <file>Data/Image/normal.png</file>
+        <file>Data/Image/wnd-icon.png</file>
+    </qresource>
+</RCC>

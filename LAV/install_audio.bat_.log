@@ -1,0 +1,4 @@
+
+F:\Pro\CcMusic\Debug>cd /d "F:\Pro\CcMusic\LAV\" 
+
+F:\Pro\CcMusic\LAV>regsvr32.exe LAVAudio.ax 

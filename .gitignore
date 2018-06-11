@@ -1,0 +1,17 @@
+*.lib
+*.dll
+*.exe
+*.user
+*.exp
+*.ilk
+*.pdb
+*.sdf
+*.suo
+*.opensdf
+*.stash
+Makefile*
+
+/Debug/*
+/Release/*
+/debug/*
+/release/*
