@@ -45,6 +45,7 @@ void MusicPlaylist::initUi()
 
     QHBoxLayout* bottomLayout = new QHBoxLayout;
     bottomLayout->setMargin(0);
+    m_pPlayList->setViewMode(QListView::IconMode);
     bottomLayout->addWidget(m_pPlayList);
 
     QVBoxLayout* layout = new QVBoxLayout;
@@ -96,7 +97,7 @@ void MusicPlaylist::AddPlayList(QString filePath)
 
 void MusicPlaylist::OnBtnAddClick()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "选取音乐文件", m_lastDir, "MP3 (*.mp3)");
+    QString filePath = QFileDialog::getOpenFileName(this, "选取音乐文件", m_lastDir, "MP3 (*.mp3 *.mp4)");
     m_lastDir = QFileInfo(filePath).absoluteDir().absolutePath();
     AddPlayList(filePath);
 }

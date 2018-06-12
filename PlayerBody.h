@@ -12,8 +12,6 @@ public:
     explicit PlayerBody(QWidget *parent = 0);
     ~PlayerBody();
 
-    enum {EM_MUSIC, EM_VIDEO};
-
 public:
     void     ShowMusicInfo(const QStringList& info, const QImage& img);
 
@@ -23,8 +21,6 @@ protected:
 private:
     QImage    m_musicImage;
     QString   m_strMusicTitle;
-
-    uchar     m_currentMode;
 };
 
 #endif // PLAYERBODY_H

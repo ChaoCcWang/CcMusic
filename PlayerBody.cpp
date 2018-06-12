@@ -5,14 +5,28 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPainter>
+#include <QVideoWidget>
+#include <QPalette>
 
 #define DEFAULT_IMAGE_PATH "../Data/Image/default.png"
 
 extern CcMusic* g_pMusic;
 PlayerBody::PlayerBody(QWidget *parent)
-    : QWidget(parent), m_currentMode(EM_MUSIC)
+    : QWidget(parent)
 {
-
+    QHBoxLayout* layout = new QHBoxLayout;
+    QVideoWidget *videow = new QVideoWidget();
+    layout->addWidget(videow);
+    // 设置属性
+    videow->setAspectRatioMode(Qt::IgnoreAspectRatio);
+    //videow->setAutoFillBackground(true);
+    QPalette* palette = new QPalette();
+    palette->setBrush(QPalette::Background, Qt::black);
+    videow->setPalette(*palette);
+    delete palette;
+    //
+    setLayout(layout);
+    g_pMusic->GetPlayer()->setVideoOutput(videow);
 }
 
 PlayerBody::~PlayerBody()
@@ -22,20 +36,29 @@ PlayerBody::~PlayerBody()
 
 void PlayerBody::ShowMusicInfo(const QStringList &info, const QImage &img)
 {
-    if(info.contains("ThumbnailImage"))
+    if(info.contains("VideoFrameRate"))
     {
-        m_musicImage = img;
+        m_musicImage = QImage();
+        m_strMusicTitle = QString();
     }
     else
     {
-        m_musicImage.load(DEFAULT_IMAGE_PATH);
+        if(info.contains("ThumbnailImage"))
+        {
+            m_musicImage = img;
+        }
+        else
+        {
+            m_musicImage.load(DEFAULT_IMAGE_PATH);
+        }
+
+        // title
+        if(info.contains("Title"))
+        {
+            m_strMusicTitle = g_pMusic->GetPlayer()->metaData("Title").toString();
+        }
     }
 
-    // title
-    if(info.contains("Title"))
-    {
-        m_strMusicTitle = g_pMusic->GetPlayer()->metaData("Title").toString();
-    }
     //
     update();
 }

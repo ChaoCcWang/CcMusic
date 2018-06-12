@@ -11,7 +11,6 @@ class CcMusic;
 
 // 显示歌词
 // 添加文件夹显示
-// 显示视频
 // 资源丢失问题
 
 
@@ -65,9 +64,6 @@ private:
     QMediaPlaylist*  m_pMediaPlaylist;
     CloseWnd*        m_pCloseWnd;
     QSystemTrayIcon* m_pSysTray;
-
-private slots:
-
 };
 
 #endif // CCMUSIC_H

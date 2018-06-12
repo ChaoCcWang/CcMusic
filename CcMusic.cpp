@@ -12,6 +12,7 @@
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
+#include <QDebug>
 
 #define QSS_FILE_PATH "../Data/Style/default.css"
 
@@ -149,6 +150,8 @@ void CcMusic::SetQssStyle()
 //
 void CcMusic::OnClose()
 {
+    m_pPlayer->pause();
+    //
     m_pCloseWnd->exec();
     if(m_pCloseWnd->GetCloseWndState() == CloseWnd::EM_TRAY)
     {
@@ -159,6 +162,10 @@ void CcMusic::OnClose()
     {
         GetPlayList()->WriteConf();
         exit(0);
+    }
+    else
+    {
+        m_pPlayer->play();
     }
 }
 
@@ -173,6 +180,10 @@ bool CcMusic::Play()
 {
     if(m_pMediaPlaylist->currentIndex() != -1)
     {
+        // 死循环等待文件加载完成
+        while(m_pPlayer->mediaStatus() != QMediaPlayer::LoadingMedia)
+        {
+        }
         m_pPlayer->play();
         return true;
     }
@@ -234,6 +245,9 @@ void CcMusic::playPreSong()
     if(m_pMediaPlaylist->previousIndex() != -1)
     {
         m_pMediaPlaylist->previous();
+        // 恢复初始位置
+        m_pPlayer->setPosition(0);
+        // 播放？
         isPlay ? m_pPlayer->play() : m_pPlayer->stop();
     }
 }
@@ -244,6 +258,9 @@ void CcMusic::playNextSong()
     if(m_pMediaPlaylist->nextIndex() != -1)
     {
         m_pMediaPlaylist->next();
+        // 恢复初始位置
+        m_pPlayer->setPosition(0);
+        //
         isPlay ? m_pPlayer->play() : m_pPlayer->stop();
     }
 }
