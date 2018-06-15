@@ -14,6 +14,8 @@
 #define ICON_PRE_PATH  "://Data/Image/pre.png"
 #define ICON_SOUND_PATH  "://Data/Image/sound.png"
 #define ICON_LIST_PATH  "://Data/Image/list-view.png"
+#define ONE_HOUR_SCOND  1000 * 60 * 60
+
 
 extern CcMusic* g_pMusic;
 BottomBar::BottomBar(QWidget *parent) : QWidget(parent)
@@ -35,6 +37,7 @@ void BottomBar::initUi()
     m_pBtnStop = new QPushButton();
     m_pBtnNext = new QPushButton();
     m_pBtnSonglist = new QPushButton();
+    m_pBtnPlayMode = new QPushButton();
     m_LabelTime = new QLabel("00:00/00:00");
     //
     m_pSliderProcess = new ProcessSlider(Qt::Horizontal, this);
@@ -48,6 +51,7 @@ void BottomBar::initUi()
     m_pBtnNext->setIcon(QIcon(ICON_NEXT_PATH));
     m_pBtnVolume->setIcon(QIcon(ICON_SOUND_PATH));
     m_pBtnSonglist->setIcon(QIcon(ICON_LIST_PATH));
+    //m_pBtnPlayMode->setIcon(QIcon(ICON_LIST_PATH));
     m_pBtnVolume->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     m_pBtnSonglist->setCheckable(true);
     //
@@ -61,6 +65,7 @@ void BottomBar::initUi()
     bottomLayout->addWidget(m_pBtnNext);
     bottomLayout->addWidget(m_LabelTime);
     bottomLayout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding));
+    bottomLayout->addWidget(m_pBtnPlayMode);
     bottomLayout->addWidget(m_pBtnSonglist);
     //
     QHBoxLayout* topLayout = new QHBoxLayout;
@@ -93,6 +98,11 @@ void BottomBar::initUi()
     connect(m_pBtnSonglist, &QPushButton::clicked, this, &BottomBar::OnBtnPlayListClick);
     connect(m_pBtnPre, &QPushButton::clicked, g_pMusic, &CcMusic::playPreSong);
     connect(m_pBtnNext, &QPushButton::clicked, g_pMusic, &CcMusic::playNextSong);
+    m_pBtnPlayMode->setCheckable(true);
+    connect(m_pBtnPlayMode, &QPushButton::clicked, [&](bool isOk)
+    {
+        isOk ? g_pMusic->showFullScreen() : g_pMusic->showNormal();
+    });
 }
 
 
@@ -148,14 +158,16 @@ void BottomBar::OnPositionChange(qint64 position)
         g_pMusic->playNextSong();
     }
     QString strTime = m_LabelTime->text();
-    QString strCount = QTime(0, 0, 0).addMSecs(position).toString("mm:ss");
+    QString strCount = QTime(0, 0, 0).addMSecs(position)
+            .toString(position > ONE_HOUR_SCOND ? "h:mm:ss" : "mm:ss");
     m_LabelTime->setText(QString("%1/%2").arg(strCount, strTime.section("/", 1, 1)));
 }
 
 void BottomBar::OnDurationChanged(qint64 duration)
 {
     m_pSliderProcess->setRange(0, duration);
-    QString strTimeText = QString("00:00/%1").arg(QTime(0, 0, 0).addMSecs(duration).toString("mm:ss"));
+    QString strTimeText = QString("00:00/%1").arg(QTime(0, 0, 0)
+                         .addMSecs(duration).toString(duration > ONE_HOUR_SCOND ? "h:mm:ss" : "mm:ss"));
     m_LabelTime->setText(strTimeText);
 }
 

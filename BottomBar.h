@@ -15,7 +15,7 @@ public:
     explicit BottomBar(QWidget *parent = 0);
     ~BottomBar();
 
-
+    enum {EM_LIST, EM_LIST_RECYCLE, EM_RANDOM, EM_ONE_RECYCLE};
 
 signals:
     void SignalPositionChange(int);
@@ -39,6 +39,7 @@ private:
     QPushButton* m_pBtnNext;
     QPushButton* m_pBtnSonglist;
     QPushButton* m_pBtnVolume;
+    QPushButton* m_pBtnPlayMode;
 
     QLabel*      m_LabelTime;
     ProcessSlider*     m_pSliderProcess;

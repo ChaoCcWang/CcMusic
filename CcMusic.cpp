@@ -180,10 +180,6 @@ bool CcMusic::Play()
 {
     if(m_pMediaPlaylist->currentIndex() != -1)
     {
-        // 死循环等待文件加载完成
-        while(m_pPlayer->mediaStatus() != QMediaPlayer::LoadingMedia)
-        {
-        }
         m_pPlayer->play();
         return true;
     }

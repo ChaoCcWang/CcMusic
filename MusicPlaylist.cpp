@@ -45,7 +45,6 @@ void MusicPlaylist::initUi()
 
     QHBoxLayout* bottomLayout = new QHBoxLayout;
     bottomLayout->setMargin(0);
-    m_pPlayList->setViewMode(QListView::IconMode);
     bottomLayout->addWidget(m_pPlayList);
 
     QVBoxLayout* layout = new QVBoxLayout;
@@ -85,10 +84,15 @@ void MusicPlaylist::AddPlayList(QString filePath)
     QString fileName = QFileInfo(filePath).fileName();
     QListWidgetItem* item = new QListWidgetItem(fileName);
     m_pPlayList->addItem(item);
+    //
+    QIcon icon(filePath.contains(".mp3") ? "://Data/Image/audio.png" : "://Data/Image/video.png");
+    item->setIcon(icon);
+    //
     m_arListWidgetItem.append(item);
     m_arSongList.append(filePath);
     //
-    m_pMediaPlaylist->insertMedia(m_arListWidgetItem.size() - 1, QMediaContent(QUrl::fromLocalFile(filePath)));
+    QMediaContent mediaContent(QUrl::fromLocalFile(filePath));
+    m_pMediaPlaylist->insertMedia(m_arListWidgetItem.size() - 1, mediaContent);
     if(m_arListWidgetItem.size() == 1)
     {
         g_pMusic->SetCurrentMusic(0);
@@ -97,7 +101,7 @@ void MusicPlaylist::AddPlayList(QString filePath)
 
 void MusicPlaylist::OnBtnAddClick()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "选取音乐文件", m_lastDir, "MP3 (*.mp3 *.mp4)");
+    QString filePath = QFileDialog::getOpenFileName(this, "选取音乐文件", m_lastDir, "音频//视频 (*.mp3 *.mp4 *.avi *.rmvb)");
     m_lastDir = QFileInfo(filePath).absoluteDir().absolutePath();
     AddPlayList(filePath);
 }

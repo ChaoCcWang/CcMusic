@@ -31,7 +31,7 @@ void TitleBar::initUi()
     layout->setMargin(0);
     layout->setContentsMargins(10, 5, 10, 0);
     m_pLabelIcon = new QLabel;
-    m_pLabelTitle = new QLabel("CcMusic 音乐播放器");
+    m_pLabelTitle = new QLabel("CcMusic 播放器");
     m_pLabelTitle->setObjectName("WindowTitle");
     m_pBtnMinimize = new QPushButton();
     m_pBtnMaximize = new QPushButton();
