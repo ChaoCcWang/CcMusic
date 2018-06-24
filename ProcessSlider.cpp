@@ -14,12 +14,17 @@ ProcessSlider::~ProcessSlider()
 
 }
 
+//
 void ProcessSlider::mousePressEvent(QMouseEvent *e)
 {
     g_pMusic->disConnectPlayerSignal();
+    //
+    double pos = e->pos().x() / (double)width();
+    setValue(pos * (maximum() - minimum()) + minimum());
     return QSlider::mousePressEvent(e);
 }
 
+//
 void ProcessSlider::mouseReleaseEvent(QMouseEvent *e)
 {
     g_pMusic->GetPlayer()->setPosition(this->value());
