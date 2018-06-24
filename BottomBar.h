@@ -10,6 +10,7 @@
 enum { EM_LIST_RECYCLE, EM_ONE_RECYCLE, EM_RANDOM, EM_MODE_COUNT};
 
 class ProcessSlider;
+class VolumeSlider;
 class BottomBar : public QWidget
 {
     Q_OBJECT
@@ -34,6 +35,7 @@ public slots:
 protected:
     void initUi();
     void showEvent(QShowEvent *e);
+    void keyPressEvent(QKeyEvent* e);
 
 public:
     MusicPlaylist* m_pPlayListWnd;
@@ -48,8 +50,8 @@ private:
     QPushButton*         m_pBtnPlayMode;
 
     QLabel*              m_LabelTime;
-    ProcessSlider*         m_pSliderProcess;
-    QSlider*             m_pSliderVolume;
+    ProcessSlider*       m_pSliderProcess;
+    VolumeSlider*        m_pSliderVolume;
 
     uchar                m_ucPlayMode;
     QMap<uchar, QString> m_mapModeIcon;

@@ -14,6 +14,7 @@ public:
 
 public:
     void     ShowMusicInfo(const QStringList& info, const QImage& img);
+    void     UpdateUi();
 
 protected:
     void     paintEvent(QPaintEvent* e);

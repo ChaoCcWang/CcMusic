@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     MusicPlaylist.cpp \
     PlayerBody.cpp \
     CloseWnd.cpp \
-    ProcessSlider.cpp
+    ProcessSlider.cpp \
+    VolumeSlider.cpp
 
 HEADERS  += CcMusic.h \
     TitleBar.h \
@@ -30,7 +31,8 @@ HEADERS  += CcMusic.h \
     MusicPlaylist.h \
     PlayerBody.h \
     CloseWnd.h \
-    ProcessSlider.h
+    ProcessSlider.h \
+    VolumeSlider.h
 
 FORMS    += CcMusic.ui
 

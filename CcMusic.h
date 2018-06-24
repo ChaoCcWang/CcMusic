@@ -43,6 +43,7 @@ public:
 
     void ConnectPlayerSignal();
     void disConnectPlayerSignal();
+    void keyPressEvent(QKeyEvent *e);
 
 public slots:
     void setVolume(int v);
@@ -54,7 +55,6 @@ protected:
     void initMusic();
     void closeEvent(QCloseEvent* e);
     void SetQssStyle();
-    void keyPressEvent(QKeyEvent *e);
 
 private:
     Ui::CcMusic *ui;

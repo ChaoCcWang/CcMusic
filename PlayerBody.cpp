@@ -63,6 +63,11 @@ void PlayerBody::ShowMusicInfo(const QStringList &info, const QImage &img)
     update();
 }
 
+void PlayerBody::UpdateUi()
+{
+    update();
+}
+
 void PlayerBody::paintEvent(QPaintEvent *e)
 {
     QPainter painter;
@@ -70,14 +75,20 @@ void PlayerBody::paintEvent(QPaintEvent *e)
     painter.begin(this);
 
     QFont font = painter.font();
-    font.setPixelSize(25);
+    font.setPixelSize(20);
     font.setBold(true);
     painter.setFont(font);
     // pic
-    painter.drawPixmap(50 , (height() - 100) / 2, 100, 100, QPixmap::fromImage(m_musicImage));
+    painter.drawPixmap(50 , (height() - 100) / 2, 120, 120, QPixmap::fromImage(m_musicImage));
+    // title
+    painter.drawText(QRect(10, 30, (width() - 20), 50), Qt::AlignCenter, m_strMusicTitle);
     //
-    painter.drawText(QRect(150, (height() - 50) / 2, width() - 150, 50), Qt::AlignCenter, m_strMusicTitle);
-
+    font.setPixelSize(13);
+    font.setBold(false);
+    painter.setFont(font);
+    QString strVolumn("音量: %1%");
+    painter.drawText(QRect(50, (height() - 100) / 2 + 150, 100, 50), Qt::AlignLeft, strVolumn.arg(g_pMusic->GetPlayer()->volume()));
+    //
     painter.end();
     return QWidget::paintEvent(e);
 }

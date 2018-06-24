@@ -1,6 +1,7 @@
 #include "BottomBar.h"
 #include "CcMusic.h"
 #include "ProcessSlider.h"
+#include "VolumeSlider.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QMediaPlayer>
@@ -53,7 +54,7 @@ void BottomBar::initUi()
     m_pSliderProcess = new ProcessSlider(Qt::Horizontal, this);
 
     m_pBtnVolume = new QPushButton();
-    m_pSliderVolume = new QSlider(Qt::Horizontal);
+    m_pSliderVolume = new VolumeSlider(Qt::Horizontal, this);
     //
     m_pBtnPre->setIcon(QIcon(ICON_PRE_PATH));
     m_pBtnPlay->setIcon(QIcon(ICON_PALY_PATH));
@@ -64,6 +65,14 @@ void BottomBar::initUi()
     m_pBtnPlayMode->setIcon(QIcon(ICON_REPEAT_PATH));
     m_pBtnVolume->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     m_pBtnSonglist->setCheckable(true);
+    //
+    m_pBtnPre->setFocusPolicy(Qt::NoFocus);
+    m_pBtnPlay->setFocusPolicy(Qt::NoFocus);
+    m_pBtnStop->setFocusPolicy(Qt::NoFocus);
+    m_pBtnNext->setFocusPolicy(Qt::NoFocus);
+    m_pBtnVolume->setFocusPolicy(Qt::NoFocus);
+    m_pBtnSonglist->setFocusPolicy(Qt::NoFocus);
+    m_pBtnPlayMode->setFocusPolicy(Qt::NoFocus);
     //
     QHBoxLayout* bottomLayout = new QHBoxLayout;
     bottomLayout->setMargin(0);
@@ -111,8 +120,7 @@ void BottomBar::initUi()
     connect(m_pBtnPlayMode, &QPushButton::clicked, this, &BottomBar::SwitchMode);
 }
 
-
-
+//
 void BottomBar::showEvent(QShowEvent *e)
 {
     m_pBtnSonglist->isChecked() ? m_pPlayListWnd->show() : m_pPlayListWnd->hide();
@@ -120,8 +128,12 @@ void BottomBar::showEvent(QShowEvent *e)
 }
 
 //
+void BottomBar::keyPressEvent(QKeyEvent *e)
+{
+    g_pMusic->keyPressEvent(e);
+}
 
-
+//
 void BottomBar::SwitchMode()
 {
     m_ucPlayMode += 1;

@@ -234,6 +234,7 @@ QMediaPlaylist* CcMusic::GetMediaPlaylist()
 void CcMusic::setVolume(int v)
 {
     m_pPlayer->setVolume(v);
+    m_pPlayerBody->UpdateUi();
 }
 
 //
@@ -303,14 +304,15 @@ void CcMusic::keyPressEvent(QKeyEvent *e)
         m_pBottomBar->GetNextButton()->click();
         break;
     case Qt::Key_Up:
-        m_pPlayer->setVolume(m_pPlayer->volume() + 5);
+        m_pPlayer->setVolume(m_pPlayer->volume() + 1);
         break;
     case Qt::Key_Down:
-        m_pPlayer->setVolume(m_pPlayer->volume() - 5);
+        m_pPlayer->setVolume(m_pPlayer->volume() - 1);
         break;
     default:
         break;
     }
-    return QWidget::keyPressEvent(e);
+    m_pPlayerBody->UpdateUi();
+    //return QWidget::keyPressEvent(e);
 }
 
