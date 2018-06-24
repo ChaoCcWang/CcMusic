@@ -12,6 +12,7 @@
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
+#include <QTime>
 #include <QDebug>
 
 #define QSS_FILE_PATH "../Data/Style/default.css"
@@ -33,6 +34,8 @@ CcMusic::CcMusic(QWidget *parent) :
     initMusic();
     //
     initUi();
+    //
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 }
 
 CcMusic::~CcMusic()
@@ -115,7 +118,6 @@ void CcMusic::initMusic()
             m_pPlayerBody->ShowMusicInfo(m_pPlayer->availableMetaData(), img);
         }
     });
-
 }
 
 void CcMusic::ConnectPlayerSignal()
@@ -237,27 +239,78 @@ void CcMusic::setVolume(int v)
 //
 void CcMusic::playPreSong()
 {
-    bool isPlay = m_pPlayer->state() == QMediaPlayer::PlayingState;
-    if(m_pMediaPlaylist->previousIndex() != -1)
+    bool isPlay = (m_pPlayer->state() == QMediaPlayer::PlayingState);
+    bool isPreBtnClick = (m_pBottomBar->GetPreButton() == (QPushButton*)sender());
+    uchar mode = m_pBottomBar->GetPlayMode();
+    if(mode == EM_LIST_RECYCLE || (mode == EM_ONE_RECYCLE && isPreBtnClick))
     {
-        m_pMediaPlaylist->previous();
-        // 恢复初始位置
-        m_pPlayer->setPosition(0);
-        // 播放？
-        isPlay ? m_pPlayer->play() : m_pPlayer->stop();
+        if(m_pMediaPlaylist->currentIndex() != 0)
+            m_pMediaPlaylist->previous();
+        else
+            m_pMediaPlaylist->setCurrentIndex(GetPlayList()->GetSongCount() - 1);
     }
+    else if(mode == EM_RANDOM)
+    {
+        int index = qrand() % (GetPlayList()->GetSongCount() - 1);   //随机生成0到9的随机数
+        m_pMediaPlaylist->setCurrentIndex(index);
+    }
+
+    disConnectPlayerSignal();
+    // 恢复初始位置
+    m_pPlayer->setPosition(0);
+    //
+    isPlay ? m_pPlayer->play() : m_pPlayer->stop();
+    ConnectPlayerSignal();
 }
 
 void CcMusic::playNextSong()
 {
-    bool isPlay = m_pPlayer->state() == QMediaPlayer::PlayingState;
-    if(m_pMediaPlaylist->nextIndex() != -1)
+    bool isPlay = (m_pPlayer->state() == QMediaPlayer::PlayingState);
+    bool isNextBtnClick = (m_pBottomBar->GetNextButton() == (QPushButton*)sender());
+    uchar mode = m_pBottomBar->GetPlayMode();
+    if(mode == EM_LIST_RECYCLE || (mode == EM_ONE_RECYCLE && isNextBtnClick))
     {
-        m_pMediaPlaylist->next();
-        // 恢复初始位置
-        m_pPlayer->setPosition(0);
-        //
-        isPlay ? m_pPlayer->play() : m_pPlayer->stop();
+        if(m_pMediaPlaylist->nextIndex() != -1)
+            m_pMediaPlaylist->next();
+        else
+            m_pMediaPlaylist->setCurrentIndex(0);
     }
+    else if(mode == EM_RANDOM)
+    {
+        int index = qrand() % (GetPlayList()->GetSongCount() - 1);   //随机生成0到9的随机数
+        m_pMediaPlaylist->setCurrentIndex(index);
+    }
+
+    disConnectPlayerSignal();
+    // 恢复初始位置
+    m_pPlayer->setPosition(0);
+    //
+    isPlay ? m_pPlayer->play() : m_pPlayer->stop();
+    ConnectPlayerSignal();
+}
+
+//
+void CcMusic::keyPressEvent(QKeyEvent *e)
+{
+    switch (e->key()) {
+    case Qt::Key_Space:
+        m_pBottomBar->GetPlayButton()->click();
+        break;
+    case Qt::Key_Left:
+        m_pBottomBar->GetPreButton()->click();
+        break;
+    case Qt::Key_Right:
+        m_pBottomBar->GetNextButton()->click();
+        break;
+    case Qt::Key_Up:
+        m_pPlayer->setVolume(m_pPlayer->volume() + 5);
+        break;
+    case Qt::Key_Down:
+        m_pPlayer->setVolume(m_pPlayer->volume() - 5);
+        break;
+    default:
+        break;
+    }
+    return QWidget::keyPressEvent(e);
 }
 

@@ -7,6 +7,8 @@
 #include <QSlider>
 #include "MusicPlaylist.h"
 
+enum { EM_LIST_RECYCLE, EM_ONE_RECYCLE, EM_RANDOM, EM_MODE_COUNT};
+
 class ProcessSlider;
 class BottomBar : public QWidget
 {
@@ -15,7 +17,11 @@ public:
     explicit BottomBar(QWidget *parent = 0);
     ~BottomBar();
 
-    enum {EM_LIST, EM_LIST_RECYCLE, EM_RANDOM, EM_ONE_RECYCLE};
+public:
+    uchar GetPlayMode() {return m_ucPlayMode;}
+    QPushButton* GetNextButton() {return m_pBtnNext;}
+    QPushButton* GetPreButton() {return m_pBtnPre;}
+    QPushButton* GetPlayButton() {return m_pBtnPlay;}
 
 signals:
     void SignalPositionChange(int);
@@ -33,23 +39,27 @@ public:
     MusicPlaylist* m_pPlayListWnd;
 
 private:
-    QPushButton* m_pBtnPre;
-    QPushButton* m_pBtnPlay;
-    QPushButton* m_pBtnStop;
-    QPushButton* m_pBtnNext;
-    QPushButton* m_pBtnSonglist;
-    QPushButton* m_pBtnVolume;
-    QPushButton* m_pBtnPlayMode;
+    QPushButton*         m_pBtnPre;
+    QPushButton*         m_pBtnPlay;
+    QPushButton*         m_pBtnStop;
+    QPushButton*         m_pBtnNext;
+    QPushButton*         m_pBtnSonglist;
+    QPushButton*         m_pBtnVolume;
+    QPushButton*         m_pBtnPlayMode;
 
-    QLabel*      m_LabelTime;
-    ProcessSlider*     m_pSliderProcess;
-    QSlider*     m_pSliderVolume;
+    QLabel*              m_LabelTime;
+    ProcessSlider*         m_pSliderProcess;
+    QSlider*             m_pSliderVolume;
+
+    uchar                m_ucPlayMode;
+    QMap<uchar, QString> m_mapModeIcon;
 
 private slots:
     void OnPlayBtnClick();
     void OnStopBtnClick();
     void OnBtnPlayListClick(bool isOpen);
     void OnPlayListDoubleClick();
+    void SwitchMode();
 };
 
 #endif // BOTTOMBAR_H

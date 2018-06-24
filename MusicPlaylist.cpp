@@ -5,11 +5,15 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QDomDocument>
+#include <QAction>
+#include <QLineEdit>
 #include "CcMusic.h"
 
 #define CONFIG_PATH "../Data/Config/CcMusic.xml"
 #define ICON_MINUS_PATH  "://Data/Image/minus.png"
 #define ICON_PLUS_PATH  "://Data/Image/plus.png"
+#define ICON_AUDIO_PATH  "://Data/Image/audio.png"
+#define ICON_VIDEO_PATH  "://Data/Image/video.png"
 
 extern CcMusic* g_pMusic;
 MusicPlaylist::MusicPlaylist(QMediaPlaylist *playList, QWidget *parent)
@@ -19,6 +23,8 @@ MusicPlaylist::MusicPlaylist(QMediaPlaylist *playList, QWidget *parent)
     setWindowFlags(Qt::Dialog|Qt::WindowMinMaxButtonsHint|Qt::FramelessWindowHint);
     //
     initUi();
+    //
+    initMenu();
     //
     ReadConf();
 }
@@ -85,13 +91,23 @@ void MusicPlaylist::AddPlayList(QString filePath)
     QListWidgetItem* item = new QListWidgetItem(fileName);
     m_pPlayList->addItem(item);
     //
-    QIcon icon(filePath.contains(".mp3") ? "://Data/Image/audio.png" : "://Data/Image/video.png");
+    QIcon icon(filePath.contains(".mp3") ? ICON_AUDIO_PATH : ICON_VIDEO_PATH);
     item->setIcon(icon);
     //
     m_arListWidgetItem.append(item);
     m_arSongList.append(filePath);
     //
-    QMediaContent mediaContent(QUrl::fromLocalFile(filePath));
+    QUrl url;
+    if(filePath.startsWith("http://"))
+    {
+        url.setUrl(filePath);
+    }
+    else
+    {
+        url = QUrl::fromLocalFile(filePath);
+    }
+
+    QMediaContent mediaContent(url);
     m_pMediaPlaylist->insertMedia(m_arListWidgetItem.size() - 1, mediaContent);
     if(m_arListWidgetItem.size() == 1)
     {
@@ -99,11 +115,26 @@ void MusicPlaylist::AddPlayList(QString filePath)
     }
 }
 
+void MusicPlaylist::initMenu()
+{
+    m_pMenu = new QMenu(this);
+
+    QAction* addLocalFileAction = new QAction("添加文件", this);
+    QAction* addLocalDirAction = new QAction("添加文件夹", this);
+    QAction* addNetFileAction = new QAction("添加网络文件", this);
+    m_pMenu->addAction(addLocalFileAction);
+    m_pMenu->addAction(addLocalDirAction);
+    m_pMenu->addAction(addNetFileAction);
+
+    connect(addLocalFileAction, &QAction::triggered, this, &MusicPlaylist::OnAddFile);
+    connect(addLocalDirAction, &QAction::triggered, this, &MusicPlaylist::OnAddDir);
+    connect(addNetFileAction, &QAction::triggered, this, &MusicPlaylist::OnAddNetFile);
+}
+
 void MusicPlaylist::OnBtnAddClick()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "选取音乐文件", m_lastDir, "音频//视频 (*.mp3 *.mp4 *.avi *.rmvb)");
-    m_lastDir = QFileInfo(filePath).absoluteDir().absolutePath();
-    AddPlayList(filePath);
+    m_pMenu->exec(QCursor::pos());
+
 }
 
 void MusicPlaylist::OnBtnDelClick()
@@ -124,7 +155,80 @@ void MusicPlaylist::OnListItemDoubleClick(QListWidgetItem *item)
     emit playMusic();
 }
 
+// 添加文件
+void MusicPlaylist::OnAddFile()
+{
+    QString filePath = QFileDialog::getOpenFileName(this, "选取文件", m_lastDir, "音频//视频 (*.mp3 *.mp4 *.avi *.rmvb)");
+    if(!filePath.isEmpty())
+    {
+        m_lastDir = QFileInfo(filePath).absoluteDir().absolutePath();
+        AddPlayList(filePath);
+    }
+}
 
+// 添加文件夹
+void MusicPlaylist::OnAddDir()
+{
+    QString dirPath = QFileDialog::getExistingDirectory(this, "选取文件夹", "/");
+    if(!dirPath.isEmpty())
+    {
+        QFileInfoList infoList = QDir(dirPath).entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+        for(QFileInfoList::iterator it = infoList.begin(); it != infoList.end(); it++)
+        {
+            if(it->suffix() == "mp3" ||
+                it->suffix() == "mp4" ||
+                it->suffix() == "avi" ||
+                it->suffix() == "rmvb" ||
+                it->suffix() == "flv")
+            {
+                AddPlayList(it->absoluteFilePath());
+            }
+        }
+    }
+}
+
+// 添加网络文件
+void MusicPlaylist::OnAddNetFile()
+{
+    QDialog* wgt = new QDialog;
+    wgt->setWindowFlags(Qt::WindowMinMaxButtonsHint|Qt::FramelessWindowHint);
+    QHBoxLayout* hlayout = new QHBoxLayout();
+    QLineEdit* lineEdit = new QLineEdit();
+    QPushButton* sureBtn = new QPushButton("确定");
+    QPushButton* cancelBtn = new QPushButton("取消");
+    hlayout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding));
+    hlayout->addWidget(sureBtn);
+    hlayout->addWidget(cancelBtn);
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->addWidget(lineEdit);
+    vLayout->addLayout(hlayout);
+    wgt->setLayout(vLayout);
+
+    //
+    wgt->setGeometry(geometry().x(), geometry().y() + 35, geometry().width(), 60);
+    connect(sureBtn, &QPushButton::clicked, [=]()
+    {
+        QString filePath = lineEdit->text();
+        if(!filePath.isEmpty())
+        {
+            AddPlayList(filePath);
+        }
+        wgt->close();
+    });
+    connect(cancelBtn, &QPushButton::clicked, [&]()
+    {
+        wgt->close();
+    });
+    wgt->exec();
+    delete cancelBtn;
+    delete sureBtn;
+    delete lineEdit;
+    delete hlayout;
+    delete vLayout;
+    delete wgt;
+}
+
+// 回写配置文件
 void MusicPlaylist::WriteConf()
 {
     QFile xml(CONFIG_PATH);

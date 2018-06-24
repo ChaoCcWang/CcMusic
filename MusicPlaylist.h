@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QPoint>
 #include <QMediaPlaylist>
+#include <QMenu>
 
 class MusicPlaylist : public QWidget
 {
@@ -19,6 +20,7 @@ public:
 
 public:
     void WriteConf();
+    int GetSongCount() {return m_arSongList.size();}
 
 signals:
     void playMusic();
@@ -27,7 +29,15 @@ protected:
     void initUi();
     void ReadConf();
     void AddPlayList(QString filePath);
+    void initMenu();
 
+private slots:
+    void OnBtnAddClick();
+    void OnBtnDelClick();
+    void OnListItemDoubleClick(QListWidgetItem * item);
+    void OnAddFile();
+    void OnAddDir();
+    void OnAddNetFile();
 
 private:
     QListWidget* m_pPlayList;
@@ -40,10 +50,7 @@ private:
     QList<QString>          m_arSongList;
     QString                 m_lastDir;
 
-private slots:
-    void OnBtnAddClick();
-    void OnBtnDelClick();
-    void OnListItemDoubleClick(QListWidgetItem * item);
+    QMenu*                  m_pMenu;
 };
 
 #endif // MUSICPLAYLIST_H

@@ -17,5 +17,8 @@
         <file>Data/Image/max-btn.png</file>
         <file>Data/Image/normal.png</file>
         <file>Data/Image/wnd-icon.png</file>
+        <file>Data/Image/random.png</file>
+        <file>Data/Image/repeat.png</file>
+        <file>Data/Image/repeat_one.png</file>
     </qresource>
 </RCC>

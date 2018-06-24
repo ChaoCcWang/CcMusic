@@ -6,21 +6,31 @@
 #include <QMediaPlayer>
 #include <QTime>
 
-#define ICON_PALY_PATH "://Data/Image/play.png"
-#define ICON_PAUSE_PATH "://Data/Image/pause.png"
-#define ICON_STOP_PATH "://Data/Image/stop.png"
-#define ICON_NEXT_PATH "://Data/Image/next.png"
-#define ICON_PRE_PATH  "://Data/Image/pre.png"
-#define ICON_PRE_PATH  "://Data/Image/pre.png"
-#define ICON_SOUND_PATH  "://Data/Image/sound.png"
-#define ICON_LIST_PATH  "://Data/Image/list-view.png"
+#define ICON_PALY_PATH       "://Data/Image/play.png"
+#define ICON_PAUSE_PATH      "://Data/Image/pause.png"
+#define ICON_STOP_PATH       "://Data/Image/stop.png"
+#define ICON_NEXT_PATH       "://Data/Image/next.png"
+#define ICON_PRE_PATH        "://Data/Image/pre.png"
+#define ICON_PRE_PATH        "://Data/Image/pre.png"
+#define ICON_SOUND_PATH      "://Data/Image/sound.png"
+#define ICON_LIST_PATH       "://Data/Image/list-view.png"
+#define ICON_RANDOM_PATH     "://Data/Image/random.png"
+#define ICON_REPEAT_PATH     "://Data/Image/repeat.png"
+#define ICON_REPEAT_ONE_PATH "://Data/Image/repeat_one.png"
 #define ONE_HOUR_SCOND  1000 * 60 * 60
 
 
 extern CcMusic* g_pMusic;
-BottomBar::BottomBar(QWidget *parent) : QWidget(parent)
+BottomBar::BottomBar(QWidget *parent)
+    : QWidget(parent), m_ucPlayMode(EM_LIST_RECYCLE)
 {
     initUi();
+
+
+    m_mapModeIcon[EM_LIST_RECYCLE] = ICON_REPEAT_PATH;
+    m_mapModeIcon[EM_ONE_RECYCLE] = ICON_REPEAT_ONE_PATH;
+    m_mapModeIcon[EM_RANDOM] = ICON_RANDOM_PATH;
+
 }
 
 BottomBar::~BottomBar()
@@ -51,7 +61,7 @@ void BottomBar::initUi()
     m_pBtnNext->setIcon(QIcon(ICON_NEXT_PATH));
     m_pBtnVolume->setIcon(QIcon(ICON_SOUND_PATH));
     m_pBtnSonglist->setIcon(QIcon(ICON_LIST_PATH));
-    //m_pBtnPlayMode->setIcon(QIcon(ICON_LIST_PATH));
+    m_pBtnPlayMode->setIcon(QIcon(ICON_REPEAT_PATH));
     m_pBtnVolume->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     m_pBtnSonglist->setCheckable(true);
     //
@@ -98,11 +108,7 @@ void BottomBar::initUi()
     connect(m_pBtnSonglist, &QPushButton::clicked, this, &BottomBar::OnBtnPlayListClick);
     connect(m_pBtnPre, &QPushButton::clicked, g_pMusic, &CcMusic::playPreSong);
     connect(m_pBtnNext, &QPushButton::clicked, g_pMusic, &CcMusic::playNextSong);
-    m_pBtnPlayMode->setCheckable(true);
-    connect(m_pBtnPlayMode, &QPushButton::clicked, [&](bool isOk)
-    {
-        isOk ? g_pMusic->showFullScreen() : g_pMusic->showNormal();
-    });
+    connect(m_pBtnPlayMode, &QPushButton::clicked, this, &BottomBar::SwitchMode);
 }
 
 
@@ -111,6 +117,19 @@ void BottomBar::showEvent(QShowEvent *e)
 {
     m_pBtnSonglist->isChecked() ? m_pPlayListWnd->show() : m_pPlayListWnd->hide();
     return QWidget::showEvent(e);
+}
+
+//
+
+
+void BottomBar::SwitchMode()
+{
+    m_ucPlayMode += 1;
+    if(m_ucPlayMode == EM_MODE_COUNT)
+    {
+        m_ucPlayMode = EM_LIST_RECYCLE;
+    }
+    m_pBtnPlayMode->setIcon(QIcon(m_mapModeIcon[m_ucPlayMode]));
 }
 
 void BottomBar::HidePlayList(bool hide)

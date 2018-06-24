@@ -54,6 +54,7 @@ protected:
     void initMusic();
     void closeEvent(QCloseEvent* e);
     void SetQssStyle();
+    void keyPressEvent(QKeyEvent *e);
 
 private:
     Ui::CcMusic *ui;

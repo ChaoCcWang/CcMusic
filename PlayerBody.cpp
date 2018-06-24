@@ -18,12 +18,12 @@ PlayerBody::PlayerBody(QWidget *parent)
     QVideoWidget *videow = new QVideoWidget();
     layout->addWidget(videow);
     // 设置属性
-    videow->setAspectRatioMode(Qt::IgnoreAspectRatio);
-    //videow->setAutoFillBackground(true);
-    QPalette* palette = new QPalette();
-    palette->setBrush(QPalette::Background, Qt::black);
-    videow->setPalette(*palette);
-    delete palette;
+//    videow->setAspectRatioMode(Qt::IgnoreAspectRatio);
+//    //videow->setAutoFillBackground(true);
+//    QPalette* palette = new QPalette();
+//    palette->setBrush(QPalette::Background, Qt::black);
+//    videow->setPalette(*palette);
+//    delete palette;
     //
     setLayout(layout);
     g_pMusic->GetPlayer()->setVideoOutput(videow);
