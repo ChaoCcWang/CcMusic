@@ -42,6 +42,7 @@ void MusicPlaylist::initUi()
     m_pBtnDel = new QPushButton();
     m_pBtnDel->setIcon(QIcon(ICON_MINUS_PATH));
     m_pPlayList = new QListWidget;
+    m_pPlayList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     //
     QHBoxLayout* toplayout = new QHBoxLayout;
     toplayout->setMargin(0);

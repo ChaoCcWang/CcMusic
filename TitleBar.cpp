@@ -46,7 +46,11 @@ void TitleBar::initUi()
     m_pBtnMaximize->setIcon(QIcon(ICON_MAX_BTN_PATH));
     m_pBtnMinimize->setIcon(QIcon(ICON_MIN_BTN_PATH));
     m_pBtnClose->setIcon(QIcon(ICON_SHHUT_DOWN_PATH));
-
+    //
+    m_pBtnMaximize->setFocusPolicy(Qt::NoFocus);
+    m_pBtnMinimize->setFocusPolicy(Qt::NoFocus);
+    m_pBtnClose->setFocusPolicy(Qt::NoFocus);
+    //
     layout->addWidget(m_pLabelIcon);
     layout->addWidget(m_pLabelTitle);
     layout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Expanding));
