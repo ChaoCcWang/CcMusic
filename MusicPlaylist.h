@@ -39,17 +39,17 @@ private slots:
     void OnAddDir();
     void OnAddNetFile();
 
+public:
+    uchar                   m_ucHistoryMode;
+
 private:
     QListWidget* m_pPlayList;
     QPushButton* m_pBtnAdd;
     QPushButton* m_pBtnDel;
-
     QMediaPlaylist* m_pMediaPlaylist;
-
     QList<QListWidgetItem*> m_arListWidgetItem;
     QList<QString>          m_arSongList;
     QString                 m_lastDir;
-
     QMenu*                  m_pMenu;
 };
 

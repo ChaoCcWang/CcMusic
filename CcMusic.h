@@ -40,6 +40,8 @@ public:
     QMediaPlayer*   GetPlayer();
     MusicPlaylist*  GetPlayList();
     QMediaPlaylist* GetMediaPlaylist();
+    uchar           GetPlayMode();
+    void            SetPlayMode(uchar mode);
 
     void ConnectPlayerSignal();
     void disConnectPlayerSignal();

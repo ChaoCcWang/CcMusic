@@ -7,6 +7,7 @@
 #include <QDomDocument>
 #include <QAction>
 #include <QLineEdit>
+#include <QMediaPlayer>
 #include "CcMusic.h"
 
 #define CONFIG_PATH "../Data/Config/CcMusic.xml"
@@ -73,9 +74,49 @@ void MusicPlaylist::ReadConf()
     if(doc.setContent(&xml))
     {
         xml.close();
+        // 加载历史信息
+        QDomElement root = doc.documentElement();
+        QDomNode hisNode = root.firstChild();
+        int historySongIndex = 0;
+        while (!hisNode.isNull())
+        {
+            QDomElement hisEle = hisNode.toElement();
+            if(hisEle.tagName() == "History")
+            {
+                QDomNode p_n = hisEle.firstChild();
+                while(!p_n.isNull())
+                {
+                    QDomElement p_e = p_n.toElement();
+                    // 播放模式
+                    if(p_e.tagName() == "PlayMode")
+                    {
+                        m_ucHistoryMode = p_e.text().toInt();
+                    }
+                    // 设置声音
+                    else if(p_e.tagName() == "Volume")
+                    {
+                        g_pMusic->GetPlayer()->setVolume(p_e.text().toInt());
+                    }
+                    // 设置当前歌曲
+                    else if(p_e.tagName() == "SongIndex")
+                    {
+                        historySongIndex = p_e.text().toInt();
+                    }
+                    p_n = p_n.nextSibling();
+                }
+            }
+            hisNode = hisNode.nextSibling();
+        }
+        // 初始化歌曲列表
         QDomNodeList listNode = doc.elementsByTagName("Song");
         for(int i = 0; i < listNode.size(); i++)
         {
+            // 设置当前歌曲
+            if(i == historySongIndex + 1)
+            {
+                g_pMusic->SetCurrentMusic(historySongIndex);
+            }
+            //
             QDomElement ele = listNode.item(i).toElement();
             AddPlayList(ele.text());
         }
@@ -243,7 +284,37 @@ void MusicPlaylist::WriteConf()
         while (!p_n.isNull())
         {
             QDomElement p_e = p_n.toElement();
-            if(p_e.tagName() == "PlayList")
+            if(p_e.tagName() == "History")
+            {
+                QDomNode hisNode = p_e.firstChild();
+                while(!hisNode.isNull())
+                {
+                    QDomElement hisEle = hisNode.toElement();
+                    // 播放模式
+                    if(hisEle.tagName() == "PlayMode")
+                    {
+                        QDomNode node = hisNode.firstChild();
+                        hisNode.firstChild().setNodeValue(QString::number(g_pMusic->GetPlayMode()));
+                        hisNode.replaceChild(hisNode.firstChild(), node);
+                    }
+                    // 设置声音
+                    else if(hisEle.tagName() == "Volume")
+                    {
+                        QDomNode node = hisNode.firstChild();
+                        hisNode.firstChild().setNodeValue(QString::number(g_pMusic->GetPlayer()->volume()));
+                        hisNode.replaceChild(hisNode.firstChild(), node);
+                    }
+                    // 设置当前歌曲
+                    else if(hisEle.tagName() == "SongIndex")
+                    {
+                        QDomNode node = hisNode.firstChild();
+                        hisNode.firstChild().setNodeValue(QString::number(g_pMusic->GetMediaPlaylist()->currentIndex()));
+                        hisNode.replaceChild(hisNode.firstChild(), node);
+                    }
+                    hisNode = hisNode.nextSibling();
+                }
+            }
+            else if(p_e.tagName() == "PlayList")
             {
                 root.removeChild(p_n);
             }

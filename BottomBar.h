@@ -19,10 +19,11 @@ public:
     ~BottomBar();
 
 public:
-    uchar GetPlayMode() {return m_ucPlayMode;}
+
     QPushButton* GetNextButton() {return m_pBtnNext;}
     QPushButton* GetPreButton() {return m_pBtnPre;}
     QPushButton* GetPlayButton() {return m_pBtnPlay;}
+    void         SetPlayMode(uchar mode);
 
 signals:
     void SignalPositionChange(int);
@@ -39,6 +40,7 @@ protected:
 
 public:
     MusicPlaylist* m_pPlayListWnd;
+    uchar          m_ucPlayMode;
 
 private:
     QPushButton*         m_pBtnPre;
@@ -52,8 +54,6 @@ private:
     QLabel*              m_LabelTime;
     ProcessSlider*       m_pSliderProcess;
     VolumeSlider*        m_pSliderVolume;
-
-    uchar                m_ucPlayMode;
     QMap<uchar, QString> m_mapModeIcon;
 
 private slots:

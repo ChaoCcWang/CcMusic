@@ -25,18 +25,26 @@ extern CcMusic* g_pMusic;
 BottomBar::BottomBar(QWidget *parent)
     : QWidget(parent), m_ucPlayMode(EM_LIST_RECYCLE)
 {
+    //
     initUi();
-
-
+    //
     m_mapModeIcon[EM_LIST_RECYCLE] = ICON_REPEAT_PATH;
     m_mapModeIcon[EM_ONE_RECYCLE] = ICON_REPEAT_ONE_PATH;
     m_mapModeIcon[EM_RANDOM] = ICON_RANDOM_PATH;
-
+    //
+    SetPlayMode(m_pPlayListWnd->m_ucHistoryMode);
 }
 
 BottomBar::~BottomBar()
 {
 
+}
+
+//
+void BottomBar::SetPlayMode(uchar mode)
+{
+    m_ucPlayMode = mode;
+    m_pBtnPlayMode->setIcon(QIcon(m_mapModeIcon[m_ucPlayMode]));
 }
 
 //
@@ -103,17 +111,17 @@ void BottomBar::initUi()
     //
     setLayout(layout);
     //
-    m_pSliderVolume->setRange(0, 100);
-    m_pSliderVolume->setValue(50);
-    //
     m_pPlayListWnd = new MusicPlaylist(g_pMusic->GetMediaPlaylist(), g_pMusic);
+
     m_pPlayListWnd->hide();
     connect(m_pPlayListWnd, &MusicPlaylist::playMusic, this, &BottomBar::OnPlayListDoubleClick);
+    //
+    m_pSliderVolume->setRange(0, 100);
+    m_pSliderVolume->setValue(g_pMusic->GetPlayer()->volume());
     //
     connect(m_pSliderVolume, &QSlider::valueChanged, g_pMusic, &CcMusic::setVolume);
     connect(m_pBtnPlay, &QPushButton::clicked, this, &BottomBar::OnPlayBtnClick);
     connect(m_pBtnStop, &QPushButton::clicked, this, &BottomBar::OnStopBtnClick);
-
     connect(m_pBtnSonglist, &QPushButton::clicked, this, &BottomBar::OnBtnPlayListClick);
     connect(m_pBtnPre, &QPushButton::clicked, g_pMusic, &CcMusic::playPreSong);
     connect(m_pBtnNext, &QPushButton::clicked, g_pMusic, &CcMusic::playNextSong);

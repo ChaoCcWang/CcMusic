@@ -108,7 +108,6 @@ void CcMusic::initMusic()
     //
     m_pMediaPlaylist = new QMediaPlaylist;
     m_pPlayer->setPlaylist(m_pMediaPlaylist);
-    m_pPlayer->setVolume(50);
 
     connect(m_pPlayer, &QMediaPlayer::metaDataAvailableChanged, [&](bool available)
     {
@@ -231,6 +230,18 @@ QMediaPlaylist* CcMusic::GetMediaPlaylist()
 }
 
 //
+uchar CcMusic::GetPlayMode()
+{
+    return m_pBottomBar->m_ucPlayMode;
+}
+
+//
+void CcMusic::SetPlayMode(uchar mode)
+{
+    m_pBottomBar->SetPlayMode(mode);
+}
+
+//
 void CcMusic::setVolume(int v)
 {
     m_pPlayer->setVolume(v);
@@ -242,7 +253,7 @@ void CcMusic::playPreSong()
 {
     bool isPlay = (m_pPlayer->state() == QMediaPlayer::PlayingState);
     bool isPreBtnClick = (m_pBottomBar->GetPreButton() == (QPushButton*)sender());
-    uchar mode = m_pBottomBar->GetPlayMode();
+    uchar mode = GetPlayMode();
     if(mode == EM_LIST_RECYCLE || (mode == EM_ONE_RECYCLE && isPreBtnClick))
     {
         if(m_pMediaPlaylist->currentIndex() != 0)
@@ -268,7 +279,7 @@ void CcMusic::playNextSong()
 {
     bool isPlay = (m_pPlayer->state() == QMediaPlayer::PlayingState);
     bool isNextBtnClick = (m_pBottomBar->GetNextButton() == (QPushButton*)sender());
-    uchar mode = m_pBottomBar->GetPlayMode();
+    uchar mode = GetPlayMode();
     if(mode == EM_LIST_RECYCLE || (mode == EM_ONE_RECYCLE && isNextBtnClick))
     {
         if(m_pMediaPlaylist->nextIndex() != -1)
