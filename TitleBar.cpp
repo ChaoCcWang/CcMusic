@@ -4,7 +4,7 @@
 #include <QSpacerItem>
 #include <QApplication>
 
-#define ICON_SHHUT_DOWN_PATH  "://Data/Image/shut-down.png"
+
 #define ICON_MIN_BTN_PATH  "://Data/Image/min-btn.png"
 #define ICON_MAX_BTN_PATH  "://Data/Image/max-btn.png"
 #define ICON_NORMAL_PATH  "://Data/Image/normal.png"

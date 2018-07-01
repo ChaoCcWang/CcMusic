@@ -7,6 +7,12 @@
 #include <QSlider>
 #include "MusicPlaylist.h"
 
+#define ICON_PALY_PATH       "://Data/Image/play.png"
+#define ICON_PAUSE_PATH      "://Data/Image/pause.png"
+#define ICON_STOP_PATH       "://Data/Image/stop.png"
+#define ICON_NEXT_PATH       "://Data/Image/next.png"
+#define ICON_PRE_PATH        "://Data/Image/pre.png"
+
 enum { EM_LIST_RECYCLE, EM_ONE_RECYCLE, EM_RANDOM, EM_MODE_COUNT};
 
 class ProcessSlider;

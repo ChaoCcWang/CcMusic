@@ -35,9 +35,6 @@ public:
 
 public:
     void SetCurrentMusic(int index);
-    bool Play();
-    void Pause();
-    void Stop();
     void OnClose();
     QMediaPlayer*   GetPlayer();
     MusicPlaylist*  GetPlayList();
@@ -51,6 +48,9 @@ public:
 
 public slots:
     void setVolume(int v);
+    bool Play();
+    void Pause();
+    void Stop();
     void playPreSong();
     void playNextSong();
 

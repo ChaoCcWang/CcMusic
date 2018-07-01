@@ -77,28 +77,48 @@ void CcMusic::initUi()
     setWindowIcon(QIcon(WND_ICON_PATH));
     // 系统托盘
     m_pSysTray = new QSystemTrayIcon(QIcon(WND_ICON_PATH), this);
+
     m_pSysTray->setToolTip("CcMusic");
     QMenu* trayMenu = new QMenu();
     m_pSysTray->setContextMenu(trayMenu);
-    QAction* showHideAction = new QAction("显示&&隐藏", trayMenu);
-    QAction* quitAction = new QAction("退出", trayMenu);
-    trayMenu->addAction(showHideAction);
+    // action
+    QAction* playAction = new QAction(QIcon(ICON_PALY_PATH), "播放", trayMenu);
+    QAction* pauseAction = new QAction(QIcon(ICON_PAUSE_PATH), "暂停", trayMenu);
+    QAction* stopAction = new QAction(QIcon(ICON_STOP_PATH), "停止", trayMenu);
+    QAction* preAction = new QAction(QIcon(ICON_PRE_PATH), "上一首", trayMenu);
+    QAction* nextAction = new QAction(QIcon(ICON_NEXT_PATH), "下一首", trayMenu);
+    QAction* hideAction = new QAction(QIcon(""), "隐藏", trayMenu);
+    QAction* quitAction = new QAction(QIcon(ICON_SHHUT_DOWN_PATH), "退出", trayMenu);
+    //
+    trayMenu->addAction(playAction);
+    trayMenu->addAction(pauseAction);
+    trayMenu->addAction(stopAction);
+    trayMenu->addAction(preAction);
+    trayMenu->addAction(nextAction);
     trayMenu->addSeparator();
+    trayMenu->addAction(hideAction);
     trayMenu->addAction(quitAction);
     m_pSysTray->show();
-    connect(showHideAction, &QAction::triggered, [&](){
-        if(this->isHidden())
+    //
+    connect(playAction, &QAction::triggered, this, &CcMusic::Play);
+    connect(pauseAction, &QAction::triggered, this, &CcMusic::Pause);
+    connect(stopAction, &QAction::triggered, this, &CcMusic::Stop);
+    connect(preAction, &QAction::triggered, this, &CcMusic::playPreSong);
+    connect(nextAction, &QAction::triggered, this, &CcMusic::playNextSong);
+    connect(hideAction, &QAction::triggered, [&](){
+        this->hide();
+        GetPlayList()->hide();
+    });
+    connect(quitAction, &QAction::triggered, [](){
+        exit(0);
+    });
+
+    connect(m_pSysTray, &QSystemTrayIcon::activated, [&](QSystemTrayIcon::ActivationReason reason)
+    {
+        if(reason == QSystemTrayIcon::Trigger && this->isHidden())
         {
             this->show();
         }
-        else
-        {
-            this->hide();
-            GetPlayList()->hide();
-        }
-    });
-    connect(quitAction, &QAction::triggered, [&](){
-        exit(0);
     });
     //
     connect(m_pTitleBar, &TitleBar::showWndMax, m_pBottomBar, &BottomBar::HidePlayList);

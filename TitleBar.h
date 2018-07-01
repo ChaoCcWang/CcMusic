@@ -7,6 +7,8 @@
 #include <QPoint>
 #include <QMouseEvent>
 
+#define ICON_SHHUT_DOWN_PATH  "://Data/Image/shut-down.png"
+
 class TitleBar : public QWidget
 {
     Q_OBJECT

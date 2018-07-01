@@ -7,19 +7,12 @@
 #include <QMediaPlayer>
 #include <QTime>
 
-#define ICON_PALY_PATH       "://Data/Image/play.png"
-#define ICON_PAUSE_PATH      "://Data/Image/pause.png"
-#define ICON_STOP_PATH       "://Data/Image/stop.png"
-#define ICON_NEXT_PATH       "://Data/Image/next.png"
-#define ICON_PRE_PATH        "://Data/Image/pre.png"
-#define ICON_PRE_PATH        "://Data/Image/pre.png"
 #define ICON_SOUND_PATH      "://Data/Image/sound.png"
 #define ICON_LIST_PATH       "://Data/Image/list-view.png"
 #define ICON_RANDOM_PATH     "://Data/Image/random.png"
 #define ICON_REPEAT_PATH     "://Data/Image/repeat.png"
 #define ICON_REPEAT_ONE_PATH "://Data/Image/repeat_one.png"
 #define ONE_HOUR_SCOND  1000 * 60 * 60
-
 
 extern CcMusic* g_pMusic;
 BottomBar::BottomBar(QWidget *parent)
