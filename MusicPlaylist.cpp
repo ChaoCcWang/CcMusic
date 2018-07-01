@@ -200,7 +200,7 @@ void MusicPlaylist::OnListItemDoubleClick(QListWidgetItem *item)
 // 添加文件
 void MusicPlaylist::OnAddFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "选取文件", m_lastDir, "音频//视频 (*.mp3 *.mp4 *.avi *.rmvb)");
+    QString filePath = QFileDialog::getOpenFileName(this, "选取文件", m_lastDir, "音频 (*.mp3)");
     if(!filePath.isEmpty())
     {
         m_lastDir = QFileInfo(filePath).absoluteDir().absolutePath();
@@ -217,11 +217,7 @@ void MusicPlaylist::OnAddDir()
         QFileInfoList infoList = QDir(dirPath).entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
         for(QFileInfoList::iterator it = infoList.begin(); it != infoList.end(); it++)
         {
-            if(it->suffix() == "mp3" ||
-                it->suffix() == "mp4" ||
-                it->suffix() == "avi" ||
-                it->suffix() == "rmvb" ||
-                it->suffix() == "flv")
+            if(it->suffix() == "mp3")
             {
                 AddPlayList(it->absoluteFilePath());
             }

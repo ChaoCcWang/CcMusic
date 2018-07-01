@@ -1,7 +1,30 @@
-* {
+QWidget {
 	color : #303030;
 	font-size : 12px;
+	
 }
+
+QListWidget {
+	background-color : #f5f5f5;
+}
+
+PlayerBody QListWidget{
+	font: 14px;
+}
+
+PlayerBody QListWidget::Item{
+	padding : 5px, 0 5px, 0;
+}
+
+PlayerBody QListWidget::item:selected {
+	background:lightgray; 
+	color : red; 
+}
+
+CcMusic {
+	background-color : #f5f5f5;
+}
+
 
 CloseWnd QRadioButton{
 	font-size : 13px;
@@ -72,4 +95,9 @@ background: #eee;
 border: 1px solid #aaa;  
 border-radius: 4px;  
 }  
+
+PlayerBody #SongTitle {
+	font-size : 20px;
+	font-weight : bold;
+}
 

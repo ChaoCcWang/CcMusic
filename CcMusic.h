@@ -3,15 +3,17 @@
 
 #include <QWidget>
 #include <QVariant>
+#include <QMap>
 #include "MusicPlaylist.h"
 
 namespace Ui {
 class CcMusic;
 }
 
-// 显示歌词
-// 添加文件夹显示
+// 拖拽添加歌曲
 // 资源丢失问题
+// 右键打开文件问题
+// 当前歌曲背景色添加
 
 
 #define WND_ICON_PATH "://Data/Image/wnd-icon.png"
@@ -57,6 +59,9 @@ protected:
     void initMusic();
     void closeEvent(QCloseEvent* e);
     void SetQssStyle();
+    //void dragEnterEvent(QDragEnterEvent *e);
+    //void dropEvent(QDropEvent *e);
+
 
 private:
     Ui::CcMusic *ui;

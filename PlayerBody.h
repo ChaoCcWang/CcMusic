@@ -3,8 +3,14 @@
 
 #include <QWidget>
 #include <QImage>
+#include <QMap>
+#include <QMutexLocker>
 
 class QLabel;
+class QTimer;
+class LyricWgt;
+class SongPicture;
+class QListWidgetItem;
 class PlayerBody : public QWidget
 {
     Q_OBJECT
@@ -14,14 +20,30 @@ public:
 
 public:
     void     ShowMusicInfo(const QStringList& info, const QImage& img);
-    void     UpdateUi();
+    void     UpdatVolume();
+    QTimer*  GetTimer() {return m_pTimer;}
+
+public slots:
+    void     OnPositionChange();
 
 protected:
-    void     paintEvent(QPaintEvent* e);
+    quint64  Str2IntTime(const QString& strTime);
+    void     LoadLyric();
+    void     InitUi();
 
 private:
-    QImage    m_musicImage;
-    QString   m_strMusicTitle;
+    QLabel*        m_pTitleLabel;
+    SongPicture*   m_pImageWgt;
+    QLabel*        m_pVolumnLabel;
+    LyricWgt*      m_pLrcWgt;
+    QMap<quint64, QListWidgetItem*> m_mapLstWgtItem;
+
+    QImage         m_musicImage;
+    QString        m_strMusicTitle;
+    QMap<QString, QMap<int, QString> > m_mapLyric;
+    QTimer*        m_pTimer;
+
+    QMutex         m_mutex;
 };
 
 #endif // PLAYERBODY_H

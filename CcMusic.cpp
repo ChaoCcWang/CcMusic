@@ -14,8 +14,9 @@
 #include <QAction>
 #include <QTime>
 #include <QDebug>
+#include <QTimer>
 
-#define QSS_FILE_PATH "../Data/Style/default.css"
+#define QSS_FILE_PATH    "../Data/Style/default.css"
 
 extern CcMusic* g_pMusic = NULL;
 CcMusic::CcMusic(QWidget *parent) :
@@ -32,8 +33,11 @@ CcMusic::CcMusic(QWidget *parent) :
     SetQssStyle();
     //
     initMusic();
+
     //
     initUi();
+    //
+    m_pPlayerBody->UpdatVolume();
     //
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 }
@@ -148,9 +152,11 @@ void CcMusic::SetQssStyle()
     }
 }
 
+
 //
 void CcMusic::OnClose()
 {
+    bool isPlay = (m_pPlayer->state() == QMediaPlayer::PlayingState);
     m_pPlayer->pause();
     //
     m_pCloseWnd->exec();
@@ -164,7 +170,7 @@ void CcMusic::OnClose()
         GetPlayList()->WriteConf();
         exit(0);
     }
-    else
+    if(isPlay)
     {
         m_pPlayer->play();
     }
@@ -182,6 +188,7 @@ bool CcMusic::Play()
     if(m_pMediaPlaylist->currentIndex() != -1)
     {
         m_pPlayer->play();
+        m_pPlayerBody->GetTimer()->start();
         return true;
     }
     return false;
@@ -191,12 +198,15 @@ bool CcMusic::Play()
 void CcMusic::Pause()
 {
     m_pPlayer->pause();
+    m_pPlayerBody->GetTimer()->stop();
 }
 
 //
 void CcMusic::Stop()
 {
     m_pPlayer->stop();
+    m_pPlayerBody->GetTimer()->stop();
+    m_pPlayer->setPosition(0);
 }
 
 //
@@ -245,12 +255,14 @@ void CcMusic::SetPlayMode(uchar mode)
 void CcMusic::setVolume(int v)
 {
     m_pPlayer->setVolume(v);
-    m_pPlayerBody->UpdateUi();
+    m_pPlayerBody->UpdatVolume();
 }
 
 //
 void CcMusic::playPreSong()
 {
+    disConnectPlayerSignal();
+    //
     bool isPlay = (m_pPlayer->state() == QMediaPlayer::PlayingState);
     bool isPreBtnClick = (m_pBottomBar->GetPreButton() == (QPushButton*)sender());
     uchar mode = GetPlayMode();
@@ -267,7 +279,6 @@ void CcMusic::playPreSong()
         m_pMediaPlaylist->setCurrentIndex(index);
     }
 
-    disConnectPlayerSignal();
     // 恢复初始位置
     m_pPlayer->setPosition(0);
     //
@@ -277,6 +288,8 @@ void CcMusic::playPreSong()
 
 void CcMusic::playNextSong()
 {
+    disConnectPlayerSignal();
+    //
     bool isPlay = (m_pPlayer->state() == QMediaPlayer::PlayingState);
     bool isNextBtnClick = (m_pBottomBar->GetNextButton() == (QPushButton*)sender());
     uchar mode = GetPlayMode();
@@ -293,7 +306,7 @@ void CcMusic::playNextSong()
         m_pMediaPlaylist->setCurrentIndex(index);
     }
 
-    disConnectPlayerSignal();
+
     // 恢复初始位置
     m_pPlayer->setPosition(0);
     //
@@ -304,6 +317,7 @@ void CcMusic::playNextSong()
 //
 void CcMusic::keyPressEvent(QKeyEvent *e)
 {
+    m_pPlayerBody->GetTimer()->stop();
     switch (e->key()) {
     case Qt::Key_Space:
         m_pBottomBar->GetPlayButton()->click();
@@ -323,7 +337,7 @@ void CcMusic::keyPressEvent(QKeyEvent *e)
     default:
         break;
     }
-    m_pPlayerBody->UpdateUi();
+    m_pPlayerBody->UpdatVolume();
     //return QWidget::keyPressEvent(e);
 }
 
